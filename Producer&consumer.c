@@ -39,7 +39,7 @@ void *consumer(void *arg)
 
 void main()
 {
-    pthread_t c,p[2];
+    pthread_t c,p[8];
     
     sem_init(&e,0,5);
     sem_init(&f,0,0);
