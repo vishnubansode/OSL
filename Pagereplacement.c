@@ -89,6 +89,7 @@ void Optimal(int pages[], int n, int frames[], int frameSize) {
 
     for (int i = 0; i < n; i++) {
         int found = 0;
+        
         // Check if page is already in frame
         for (int j = 0; j < frameSize; j++) {
             if (frames[j] == pages[i]) {
@@ -98,21 +99,37 @@ void Optimal(int pages[], int n, int frames[], int frameSize) {
         }
 
         if (!found) {
-            int furthest = -1, replaceIndex = -1;
+            int emptyFrame = -1;
+
+            // Check for an empty frame
             for (int j = 0; j < frameSize; j++) {
-                int nextUse = n;
-                for (int k = i + 1; k < n; k++) {
-                    if (frames[j] == pages[k]) {
-                        nextUse = k;
-                        break;
-                    }
-                }
-                if (nextUse > furthest) {
-                    furthest = nextUse;
-                    replaceIndex = j;
+                if (frames[j] == -1) {
+                    emptyFrame = j;
+                    break;
                 }
             }
-            frames[replaceIndex] = pages[i];
+
+            if (emptyFrame != -1) {
+                // Use an empty frame if available
+                frames[emptyFrame] = pages[i];
+            } else {
+                // Find the page to replace
+                int furthest = -1, replaceIndex = -1;
+                for (int j = 0; j < frameSize; j++) {
+                    int nextUse = n;
+                    for (int k = i + 1; k < n; k++) {
+                        if (frames[j] == pages[k]) {
+                            nextUse = k;
+                            break;
+                        }
+                    }
+                    if (nextUse > furthest) {
+                        furthest = nextUse;
+                        replaceIndex = j;
+                    }
+                }
+                frames[replaceIndex] = pages[i];
+            }
             pageFaults++;
         }
 
@@ -128,6 +145,7 @@ void Optimal(int pages[], int n, int frames[], int frameSize) {
     }
     printf("Total Page Faults in Optimal: %d\n", pageFaults);
 }
+
 
 int main() {
     int n, frameSize;
